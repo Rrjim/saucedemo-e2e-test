@@ -27,3 +27,38 @@ Then(/^URL should match (.*)$/, async(expectedURL) => {
     expect(url).to.equal(expectedURL)
 
 })
+
+Given(/^A web page is opened$/, async() => {
+    await browser.url("");
+    await browser.setTimeout(
+        {
+            implicit: 15000,
+            pageLoad: 10000
+        }
+    );
+    await browser.maximizeWindow();
+})
+
+When(/^Perform web interactions$/, async function() {
+    /**
+     * 1. Input box
+     * Actions:
+     * 1. type into input box
+     * 2. clear the field and type or just addvalue
+     * 3. click and type
+     * slow typing
+     */
+
+    let num = 12345;
+    let strNum = num.toString();
+
+    let element = await $(`[type=number]`)
+    await element.setValue(strNum)
+    element.scrollIntoView()
+
+    for(let i = 0; i < SVGComponentTransferFunctionElement.length; i++) {
+        let charStr = strNum.charAt(i)
+        await browser.pause(1000)
+        await browser.keys(charStr)
+    }
+})
