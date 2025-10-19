@@ -27,4 +27,5 @@ Feature: Authentication
             | TC_SMK_006  | LOCKED_OUT_USER |
             | TC_SMK_007  | OTHER_USER      |
 
-
+# PENDING DUMMY PASSWORD Scenario
+# PENDING DUMMY BOTH

@@ -1,6 +1,7 @@
 import { Then } from "@wdio/cucumber-framework";
 import CustomWorld from "./world";
 import { parseTwoColumnTable } from "../../../utils/data/dataTableOperations";
+import logger from "../../helper/logger";
 
 Then(
   /^the number of products displayed on the page is: (\d+)$/,
@@ -49,6 +50,7 @@ Then(
   /^all items in the cart should match the ones added from products page$/,
   async function (this: CustomWorld) {
     await this.cartPage.verifyCartItemsMatchWorld(this);
+    logger.info(`>> product page items and added to cart items are matching!`)
   }
 );
 

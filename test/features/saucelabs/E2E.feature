@@ -166,3 +166,13 @@ Feature: Inventory
             | TestID     | username                |
             | TC_E2E_005 | STANDARD_USER           |
             | TC_E2E_006 | PERFORMANCE_GLITCH_USER |
+
+# PENDING CORE
+# 1. User Info Last name problems (onKeyPress adds text to first name instead)
+# 2. User Info Last name problems (onKeyPress they input remains empty)
+# => After clicking on Continue to last step for checking out, an error div comes up!
+
+
+# PENDING Good to have
+# 1. Glitch user fast scenarios failures like back to products, reset state, login
+# 2. Clicking on product items => check images, prices etc

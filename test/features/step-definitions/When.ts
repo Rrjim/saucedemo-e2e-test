@@ -1,8 +1,9 @@
-import { When } from "@wdio/cucumber-framework";
+import { When, world } from "@wdio/cucumber-framework";
 import { ENV } from "../../../config/env";
 import CustomWorld from "./world";
 import { parseSingleColumnTable } from "../../../utils/data/dataTableOperations";
 import parseSingleRowTable from "../../../utils/data/dataTableOperations";
+import logger from "../../helper/logger";
 
 When(
   /^the user is landed on the "([^"]+)" page$/,
@@ -11,6 +12,7 @@ When(
     if (!expectedURL) throw new Error(`No URL defined for ENV key: ${envKey}`);
 
     await this.basePage.verifyPageURL(expectedURL);
+    logger.info(`>> landed on the ${envKey} page`)
   }
 );
 
@@ -18,6 +20,7 @@ When(
   /^the user adds the following items to the cart:$/,
   async function (this: CustomWorld, dataTable) {
     const itemsToAdd = parseSingleColumnTable(dataTable, "item name");
+    logger.info(`>> ${itemsToAdd} is added to the cart!`)
     await this.productsPage.addItemsToCart(itemsToAdd, this);
   }
 );
@@ -33,6 +36,7 @@ When(
   /^the user clicks on the checkout button$/,
   async function (this: CustomWorld) {
     await this.cartPage.clickOnCheckOut();
+    logger.info(`>> the user just ordered ${world.cartItems.length} items`)
   }
 );
 
@@ -46,6 +50,7 @@ When(
       postalCode: row["postal code"],
     };
     await this.checkoutInfoPage.fillCheckoutInformation(info);
+    logger.info(`the user just added their information ${info.firstName} ${info.lastName} ${info.postalCode}`)
   }
 );
 
@@ -103,5 +108,6 @@ When(
   /^the user resets the application state$/,
   async function (this: CustomWorld) {
     await this.commonPage.resetAppState();
+    logger.info(`>> App state was reset!`)
   }
 );
