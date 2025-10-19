@@ -19,18 +19,37 @@ export default class CommonPage extends BasePage {
   /**
    * Optionally reset app state without logging out
    */
-  async resetAppState(): Promise<void> {
-    const burgerMenu = await CommonPageSelectors.burgerMenu();
-    await burgerMenu.waitForClickable({ timeout: 5000 });
-    await burgerMenu.click();
+async resetAppState(): Promise<void> {
+  const burgerMenu = await CommonPageSelectors.burgerMenu();
+  await burgerMenu.waitForClickable({ timeout: 5000 });
+  await burgerMenu.click();
 
-    const resetLink = await CommonPageSelectors.restAppState();
-    await resetLink.waitForClickable({ timeout: 5000 });
-    await resetLink.click();
+  const resetLink = await CommonPageSelectors.restAppState();
+  await resetLink.waitForClickable({ timeout: 5000 });
+  await resetLink.click();
 
-    await browser.refresh();
-    await burgerMenu.waitForDisplayed({ timeout: 5000 });
-  }
+  // Refresh the page after resetting
+  await browser.refresh();
+
+  // After refresh, re-fetch burgerMenu (old reference becomes stale)
+  const newBurgerMenu = await CommonPageSelectors.burgerMenu();
+  await newBurgerMenu.waitForDisplayed({ timeout: 5000 });
+
+  const cartBadge = await CommonPageSelectors.cartAddedItems();
+  await browser.waitUntil(
+    async () => {
+      const exists = await cartBadge.isExisting();
+      if (!exists) return true; 
+      const text = await cartBadge.getText();
+      return text === "0";
+    },
+    {
+      timeout: 10000,
+      timeoutMsg: "Cart badge did not reset after app state reset",
+    }
+  );
+}
+
 
   async verifyPageSubheader(expectedHeader: string) {
     const subHeaderElem = await CommonPageSelectors.pageSubHeader();

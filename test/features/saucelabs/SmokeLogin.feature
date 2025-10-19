@@ -7,7 +7,7 @@ Feature: Authentication
     @LOGIN
     Scenario Outline: <TestID>: Successful login users
         When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
-        When the user is landed on the "PRODUCTS" page
+        Then the user is landed on the "PRODUCTS" page
 
         Examples:
             | TestID | username                |

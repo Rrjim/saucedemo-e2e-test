@@ -1,11 +1,11 @@
-@SMK @PRD @CMP
+@UI @SMK @PRD @CMP 
 Feature: Product reusable component
 
   Background:
     Given the user is landed on the "LOGIN" page
 
   Scenario Outline: <TestID>: Verify product fields for different users
-    Given the user logs in with username "<username>" and password "STANDARD_PASSWORD"
+    And the user logs in with username "<username>" and password "STANDARD_PASSWORD"
     When the user is landed on the "PRODUCTS" page
     Then the product "<product>" should display correct <field> with value "<expected>"
 

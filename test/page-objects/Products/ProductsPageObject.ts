@@ -26,23 +26,46 @@ const fieldMap: Record<
 };
 
 export default class ProductsPage extends InventoryPage {
-  async toggleItemButton(
-    item: InventoryItem,
-    targetState: "Add to cart" | "Remove"
-  ) {
-    const currentText = await item.button.getText();
+  
+    async toggleItemButton(
+  item: InventoryItem,
+  targetState: "Add to cart" | "Remove"
+) {
+  const currentText = await item.button.getText();
 
-    if (currentText !== targetState) {
-      await item.button.click();
+  // Only click if state needs to change
+  if (currentText !== targetState) {
+    await item.button.click();
+
+    // We'll manually control waitUntil failure
+    let success = false;
+
+    try {
       await browser.waitUntil(
-        async () => (await item.button.getText()) === targetState,
-        {
-          timeout: 3000,
-          timeoutMsg: `Button for "${item.name}" did not change to "${targetState}"`,
-        }
+        async () => {
+          const text = await item.button.getText();
+          if (text === targetState) {
+            success = true;
+            return true;
+          }
+          return false;
+        },
+        { timeout: 5000, interval: 500 } // retry every 500ms
       );
+    } catch {
+
     }
+
+    // Assert
+    expect(
+      success,
+      `Button for "${item.name}" did not change to "${targetState}" within 5s`
+    ).to.be.true;
+  } else {
+    console.log(`Button for "${item.name}" already in target state "${targetState}"`);
   }
+}
+
 
   async addItemToCart(itemName: string, world: CustomWorld) {
     const item = await this.getItemByName(itemName);

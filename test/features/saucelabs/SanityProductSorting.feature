@@ -1,11 +1,11 @@
-@SNT @PRD @SORT
+@UI @SNT @PRD @SORT
 Feature: Product Sorting Sanity
 
     Background:
         Given the user is landed on the "LOGIN" page
 
     Scenario Outline: <TestID>: Verify the filter dropdown displays for users
-        Given the user logs in with username "<username>" and password "STANDARD_PASSWORD"
+        And the user logs in with username "<username>" and password "STANDARD_PASSWORD"
         When the user is landed on the "PRODUCTS" page
         Then the filter dropdown should display
 
@@ -18,7 +18,7 @@ Feature: Product Sorting Sanity
             | TC_SNT_35    | VISUAL_USER             |
 
     Scenario Outline: <TestID>: Verify products are sorted correctly for users
-        Given the user logs in with username "<username>" and password "STANDARD_PASSWORD"
+        And the user logs in with username "<username>" and password "STANDARD_PASSWORD"
         When the user is landed on the "PRODUCTS" page
         Then products should be sorted by "<sort type>"
 
