@@ -1,5 +1,5 @@
 Feature: Demo feature
-# SHIFT + ALT + F to align
+    # SHIFT + ALT + F to align
 
     Scenario Outline: Run first demo feature
         Given Google page is opened
@@ -8,4 +8,5 @@ Feature: Demo feature
         And URL should match <ExpectedURL>
         Examples:
             | TestID     | SearchItem | ExpectedURL            |
-            | DEMO_TC001 | WDIO    | https://webdriver.io/" |
+            | DEMO_TC001 | WDIO       | https://webdriver.io/" |
+            

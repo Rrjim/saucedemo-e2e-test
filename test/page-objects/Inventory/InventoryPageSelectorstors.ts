@@ -11,7 +11,7 @@ export const InventoryPageSelectors = {
     itemName: (item: WebdriverIO.Element) => item.$('[data-test="inventory-item-name"]'),
     itemDescription: (item: WebdriverIO.Element) => item.$('[data-test="inventory-item-desc"]'),
     itemPrice: (item: WebdriverIO.Element) => item.$('[data-test="inventory-item-price"]'),
-    itemButton: (item: WebdriverIO.Element) => item.$('.pricebar button'),
+    itemButton: (item: WebdriverIO.Element) => item.$('div[class*="pricebar"] > button'),
     itemQuantity: (item: WebdriverIO.Element) => item.$('[data-test=item-quantity]'),
     filterDropdown: () => $('[data-test=product-sort-container]'),
     cartAddedItems: () => $('[data-test=shopping-cart-badge]'),

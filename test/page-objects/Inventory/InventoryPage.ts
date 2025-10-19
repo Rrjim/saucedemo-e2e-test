@@ -45,22 +45,22 @@ export default class InventoryPage extends BasePage {
         return items.length;
     }
 
-    async verifyPageSubheader(expectedHeader: string) {
-        const subHeaderElem = await InventoryPageSelectors.pageSubHeader();
-        await subHeaderElem.waitForExist({ timeout: 5000 });
 
-        const actualSubHeaderText = await subHeaderElem.getText(); // <-- add await
-        console.log(actualSubHeaderText);
+    async verifyItemCount(expectedItemsCount: string | number) {
+        // Convert string to number dynamically
+        const expectedCount =
+            typeof expectedItemsCount === 'string'
+                ? parseInt(expectedItemsCount, 10)
+                : expectedItemsCount;
 
-        expect(actualSubHeaderText).to.equal(expectedHeader);
-    }
+        if (isNaN(expectedCount) || expectedCount < 0) {
+            throw new Error(`Invalid number of products provided: ${expectedItemsCount}`);
+        }
 
-
-    async verifyItemCount(expectedItemsCount: number) {
         const actualCount = await this.getItemCount();
-        if(!expectedItemsCount) throw Error(`Invalid number of products provided: ${expectedItemsCount}`)
-        expect(actualCount).to.equal(expectedItemsCount);
+        expect(actualCount, `Expected ${expectedCount} items, but found ${actualCount}`).to.equal(expectedCount);
     }
+
 
     async verifyAllPricesAreValid(): Promise<void> {
         const items = await this.getAllItems();
@@ -71,20 +71,33 @@ export default class InventoryPage extends BasePage {
         });
     }
 
-    async verifyAllButtonsHaveValidState() {
+    async verifyButtonsCountWithText(expectedText: string, expectedCountStr: string): Promise<void> {
+        const expectedCount = parseInt(expectedCountStr, 10);
+
+        if (isNaN(expectedCount)) {
+            throw new Error(`Invalid expected count provided: "${expectedCountStr}"`);
+        }
 
         const items = await this.getAllItems();
-        const buttonTexts = await Promise.all(items.map(item => item.button.getText()));
 
-        console.log('Button texts:', buttonTexts);
+        // Parallel fetching of button texts for performance
+        const buttonTexts = await Promise.all(
+            items
+                .filter(item => item.button)
+                .map(item => item.button!.getText())
+        );
 
-        buttonTexts.forEach((text, index) => {
-            expect(
-                ['Add to cart', 'Remove'],
-                `Unexpected button text "${text}" for item "${items[index].name}"`
-            ).to.include(text);
-        });
+        const actualCount = buttonTexts.filter(text => text === expectedText).length;
+
+        expect(
+            actualCount,
+            `Expected ${expectedCount} buttons with text "${expectedText}", but found ${actualCount}`
+        ).to.equal(expectedCount);
     }
+
+
+
+
 
     
 /** 
@@ -125,47 +138,6 @@ export default class InventoryPage extends BasePage {
         return index >= 0 ? index : null;
     }
 
-    async verifyCartItemCount(expectedCount: number): Promise<void> {
-        const badge = await InventoryPageSelectors.cartAddedItems();
-        let actualCount = 0;
-
-        if (await badge.isExisting()) {
-            actualCount = parseInt(await badge.getText());
-        }
-
-        expect(actualCount, `Expected ${expectedCount} items in the cart, but found ${actualCount}`).to.equal(Number(expectedCount));
-    }
-
-    async clickOnCartButton(){
-        const cartItemLogo = await InventoryPageSelectors.cartAddedItems();
-        await cartItemLogo.click();
-    }
-
-
-    async toggleItemButton(item: InventoryItem, targetState: 'Add to cart' | 'Remove') {
-        const currentText = await item.button.getText();
-
-        if (currentText !== targetState) {
-            await item.button.click();
-            await browser.waitUntil(
-                async () => (await item.button.getText()) === targetState,
-                { timeout: 3000, timeoutMsg: `Button for "${item.name}" did not change to "${targetState}"` }
-            );
-        }
-    }
-
-    async removeItemFromCart(itemName: string, world: CustomWorld) {
-    const item = await this.getItemByName(itemName);
-    if (!item) throw new Error(`Item "${itemName}" not found`);
-
-    // Click the button to remove the item
-    await this.toggleItemButton(item, 'Add to cart'); 
-
-    // Update the world cart
-    if (world && world.cartItems) {
-        world.cartItems = world.cartItems.filter(ci => ci.name !== itemName);
-    }
-}
 
 
 

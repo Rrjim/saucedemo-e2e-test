@@ -40,6 +40,29 @@ export default class CartPage extends InventoryPage {
         }
     }
 
+    async removeItemFromCart(itemName: string, world?: CustomWorld) {
+        const item = await this.getItemByName(itemName);
+        if (!item) throw new Error(`Item "${itemName}" not found`);
+
+        if (!item.button) {
+            throw new Error(`Button not found for item "${itemName}"`);
+        }
+
+        await item.button.click();
+
+        // Update the world cart
+        if (world?.cartItems) {
+            world.cartItems = world.cartItems.filter(ci => ci.name !== itemName);
+        }
+    }
+
+
+    async removeItemsFromCart(itemNames: string[], world: CustomWorld) {
+        for (const itemName of itemNames) {
+            await this.removeItemFromCart(itemName, world);
+        }
+    }
+
 
         /**
      * Verify that all items in the cart match the items stored in world
@@ -72,7 +95,7 @@ export default class CartPage extends InventoryPage {
         }
     }
 
-    async clickOnCheckOutButton(){
+    async clickOnCheckOut(){
         const checkoutBtn = await CartPageSelectors.checkoutButton();
         await checkoutBtn.click();
     }

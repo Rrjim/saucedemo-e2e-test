@@ -5,18 +5,24 @@ import LoginPage from '../../page-objects/Login/LoginPage';
 import CustomWorld from './world';
 import ProductsPage from '../../page-objects/Products/ProductsPageObject';
 import CartPage from '../../page-objects/Cart/CartPageObject';
+import { parseTwoColumnTable } from '../../../utils/data/dataTableOperations';
+import CheckoutOverviewPage from '../../page-objects/CheckoutOverview/CheckoutOverviewPageObject';
+import CommonPage from '../../page-objects/Common/CommonPageObject';
+import CheckoutCompletePage from '../../page-objects/CheckoutComplete/CheckoutCompletePageObject';
 
 const pageFactory = new PageFactory();
 const inventoryPage = pageFactory.get(InventoryPage);
 const productsPage = pageFactory.get(ProductsPage);
 const loginPage = pageFactory.get(LoginPage);
+const checkoutOverviewPage = pageFactory.get(CheckoutOverviewPage);
 const cartPage = pageFactory.get(CartPage);
+const commonPage = pageFactory.get(CommonPage);
+const checkoutCompletePage = pageFactory.get(CheckoutCompletePage);
 
 
 
 
-
-Then(/^the inventory page should contain (.*)$/, 
+Then(/^the number of products displayed on the page is: (\d+)$/, 
     async (numOfProducts: string) => {
         // Convert string to number
         const count = parseInt(numOfProducts);
@@ -26,24 +32,24 @@ Then(/^the inventory page should contain (.*)$/,
 
 Then(/^validate all products have valid price$/, 
     async () => {
-        await inventoryPage.verifyAllPricesAreValid();
+        await productsPage.verifyAllPricesAreValid();
         
     }
 );
 
 Then(/^the user verifies page subheader should be equal to "?([^"]+)"?$/, 
     async (expectedSubHeader: string) => {
-        await inventoryPage.verifyPageSubheader(expectedSubHeader);
+        await commonPage.verifyPageSubheader(expectedSubHeader);
     }
 )
 
 Then(/^all items should be reset to "Add to cart" state$/, async() => {
-    await inventoryPage.removeAllItemsFromCart();
+    await productsPage.removeAllItemsFromCart();
 });
 
-Then(/^the cart should display (\d+) items$/,
+Then(/^the cart logo indicator should be equal to (\d+)$/,
     async function (expectedCount: number) {
-        await inventoryPage.verifyCartItemCount(expectedCount);
+        await commonPage.verifyCartItemCount(expectedCount);
     }
 );
 
@@ -62,5 +68,65 @@ Then(/^all items in the cart should match the ones added from products page$/,
     }
 );
 
+Then(/^the payment and shipping information should be:$/, async(dataTable) => {
+  const expectedInfo = parseTwoColumnTable(dataTable);
+  await checkoutOverviewPage.verifyPaymentAndShippingInfo(expectedInfo);
+});
 
 
+Then(/^the item total and tax should match the cart$/, async function (this: CustomWorld) {
+  await checkoutOverviewPage.verifyItemTotalAndTax(this);
+});
+
+Then(/^the user verifies the checkout completion info:$/, async function (dataTable) {
+  const expectedInfo = parseTwoColumnTable(dataTable);
+  await checkoutCompletePage.verifyCompletionInfo(expectedInfo);
+});
+
+Then(/^the order completion image should be correct$/, async () => {
+  await checkoutCompletePage.verifyCompletionImageSource();
+});
+
+Then(/^there should be (\d+) buttons with text "([^"]+)"$/, 
+    async (expectedCountStr: string, expectedText: string) => {
+        await inventoryPage.verifyButtonsCountWithText(expectedText, expectedCountStr);
+    }
+);
+
+Then(/^the user logs out$/, async () => {
+    await commonPage.logout();
+});
+
+Then(/^the login error message should be correct for "([^"]+)"$/, 
+  async function (username: string) {
+    await loginPage.expectLoginErrorMessageForUser(username);
+});
+
+
+// Verify all product names
+Then(/^all products should display correct names$/, async () => {
+    await productsPage.verifyInventoryNames();
+});
+
+// Verify all product descriptions
+Then(/^all products should display correct descriptions$/, async () => {
+    await productsPage.verifyInventoryDescriptions();
+});
+
+// Verify all product prices
+Then(/^all products should display correct prices$/, async () => {
+    await productsPage.verifyInventoryPrices();
+});
+
+// Verify all product images
+Then(/^all products should display correct images$/, async () => {
+    await productsPage.verifyInventoryImages();
+});
+
+// Optionally: verify all fields at once
+Then(/^all products should display correct name, description, price, and image$/, async () => {
+    await productsPage.verifyInventoryNames();
+    await productsPage.verifyInventoryDescriptions();
+    await productsPage.verifyInventoryPrices();
+    await productsPage.verifyInventoryImages();
+});

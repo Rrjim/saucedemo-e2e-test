@@ -1,21 +1,29 @@
 Feature: Authentication
 
+    Background:
+        Given the user is landed on the "LOGIN" page
 
-  Background:
-      Given the user is landed on the "LOGIN" page
-   
-  @UI @LOGIN
-  Scenario Outline: Login and check inventory for each user
-      Given the user logs in with username "<usernameKey>" and password "STANDARD_PASSWORD" expecting "<expectedOutcome>"
+    @UI @LOGIN
+    Scenario Outline: Successful login users
+        When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
+        When the user is landed on the "PRODUCTS" page
 
+        Examples:
+            | username                |
+            | STANDARD_USER           |
+            | PROBLEM_USER            |
+            | PERFORMANCE_GLITCH_USER |
+            | ERROR_USER              |
+            | VISUAL_USER             |
 
-  Examples:
-    | usernameKey              | expectedOutcome |
-    | STANDARD_USER            | success         |
-    | LOCKED_OUT_USER          | fail            |
-    | PROBLEM_USER             | success         |
-    | PERFORMANCE_GLITCH_USER  | success         |
-    | ERROR_USER               | success         |
-    | VISUAL_USER              | success         |
-    | OTHER_USER               | fail            |
+    @UI @LOGIN
+    Scenario Outline: Unsuccessful login users
+    When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
+    Then the login error message should be correct for "<username>"
+
+    Examples:
+    | username        |
+    | LOCKED_OUT_USER |
+    | OTHER_USER      |
+
 

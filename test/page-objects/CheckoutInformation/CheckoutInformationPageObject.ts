@@ -14,12 +14,14 @@ export default class CheckoutInformationPage extends BasePage {
     }
 
     /** Click the Continue button */
-    async clickContinue(): Promise<void> {
+    async clickOnContinue(): Promise<void> {
         await CheckoutInformationPageSelectors.continueBtn().click();
     }
 
     /** Optional: click Cancel button */
-    async clickCancel(): Promise<void> {
+    async clickOnCancel(): Promise<void> {
         await CheckoutInformationPageSelectors.cancelBtn().click();
     }
+
+
 }
