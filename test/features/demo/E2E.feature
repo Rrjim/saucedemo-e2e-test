@@ -11,7 +11,7 @@ Feature: Inventory
         Then the number of products displayed on the page is: 6
         And validate all products have valid price
         When the user adds the following items to the cart:
-            | itemName                          |
+            | item name                         |
             | Sauce Labs Backpack               |
             | Sauce Labs Bike Light             |
             | Sauce Labs Bolt T-Shirt           |
@@ -28,8 +28,8 @@ Feature: Inventory
         And the user is landed on the "INFORMATION" page
         And the user verifies page subheader should be equal to "Checkout: Your Information"
         When the user fills in the checkout form with:
-            | firstName | lastName | postalCode |
-            | standard  | user     | 12345      |
+            | first name | last name | postal code |
+            | standard   | user      | 12345       |
         When the user clicks on the continue button
         And the user is landed on the "OVERVIEW" page
         And the user verifies page subheader should be equal to "Checkout: Overview"
@@ -66,7 +66,7 @@ Feature: Inventory
         Then the number of products displayed on the page is: 6
         And validate all products have valid price
         When the user adds the following items to the cart:
-            | itemName                          |
+            | item name                         |
             | Sauce Labs Backpack               |
             | Sauce Labs Bike Light             |
             | Sauce Labs Bolt T-Shirt           |
@@ -83,8 +83,8 @@ Feature: Inventory
         And the user is landed on the "INFORMATION" page
         And the user verifies page subheader should be equal to "Checkout: Your Information"
         When the user fills in the checkout form with:
-            | firstName | lastName | postalCode |
-            | standard  | user     | 12345      |
+            | first name | last name | postal code |
+            | standard   | user      | 12345       |
         When the user clicks on the continue button
         And the user is landed on the "OVERVIEW" page
         And the user verifies page subheader should be equal to "Checkout: Overview"
@@ -114,7 +114,7 @@ Feature: Inventory
         Then the number of products displayed on the page is: 6
         And validate all products have valid price
         When the user adds the following items to the cart:
-            | itemName                          |
+            | item name                         |
             | Sauce Labs Backpack               |
             | Sauce Labs Bike Light             |
             | Sauce Labs Bolt T-Shirt           |
@@ -136,8 +136,8 @@ Feature: Inventory
         And the user is landed on the "INFORMATION" page
         And the user verifies page subheader should be equal to "Checkout: Your Information"
         When the user fills in the checkout form with:
-            | firstName | lastName | postalCode |
-            | standard  | user     | 12345      |
+            | first name | last name | postal code |
+            | standard   | user      | 12345       |
         When the user clicks on the continue button
         And the user is landed on the "OVERVIEW" page
         And the user verifies page subheader should be equal to "Checkout: Overview"

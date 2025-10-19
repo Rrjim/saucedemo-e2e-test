@@ -1,3 +1,4 @@
+@SMOKE
 Feature: Authentication
 
     Background:

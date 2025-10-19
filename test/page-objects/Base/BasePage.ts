@@ -21,4 +21,14 @@ export default class BasePage {
         const actualURL = await browser.getUrl();
         expect(actualURL).to.equal(expectedURL);
     }
+    
+    /**
+     * Clicks a button element by its visible text
+     * @param text - text visible on the button
+     */
+    async clickButtonByText(text: string) {
+        const button = await $(`//button[normalize-space(text())="${text}"]`);
+        await button.waitForDisplayed();
+        await button.click();
+    }
 }

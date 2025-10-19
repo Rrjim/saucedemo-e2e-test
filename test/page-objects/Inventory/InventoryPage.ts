@@ -40,7 +40,6 @@ export default class InventoryPage extends BasePage {
 
     /** get number of items */
     async getItemCount() {
-        // Call the function to fetch elements at runtime
         const items = await InventoryPageSelectors.inventoryItems();
         return items.length;
     }
@@ -95,10 +94,6 @@ export default class InventoryPage extends BasePage {
         ).to.equal(expectedCount);
     }
 
-
-
-
-
     
 /** 
  * Ensures all items are in their default state (buttons say "Add to cart").
@@ -129,17 +124,6 @@ export default class InventoryPage extends BasePage {
         const nonDefaultButtons = buttonTexts.filter(t => t !== 'Add to cart');
         expect(nonDefaultButtons.length, 'All buttons should now say "Add to cart"').to.equal(0);
     }
-
-
-    /** get item by index by name */
-    async getItemIndexByName(itemName: string) {
-        const items = await this.getAllItems();
-        const index = items.findIndex(i => i.name === itemName);
-        return index >= 0 ? index : null;
-    }
-
-
-
 
 
 }

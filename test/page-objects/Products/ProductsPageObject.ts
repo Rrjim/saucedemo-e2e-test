@@ -4,6 +4,23 @@ import InventoryPage from "../Inventory/InventoryPage";
 import { extractNumericPart } from "../../../utils/data/stringOperations";
 import { InventoryItem } from "../Inventory/InventoryItem";
 import { ENV } from "../../../config/env";
+import { ProductsPageSelectors } from "./ProductsPageSelectors";
+
+/** Map product names to ENV.INVENTORY keys */
+const productKeyMap: Record<string, keyof typeof ENV.INVENTORY> = {};
+for (const key in ENV.INVENTORY) {
+    const item = ENV.INVENTORY[key as keyof typeof ENV.INVENTORY];
+    if (item && typeof item === "object" && "name" in item) {
+        productKeyMap[item.name] = key as keyof typeof ENV.INVENTORY;
+    }
+}
+
+/** Mapping from ProductPage fields to ENV.INVENTORY keys */
+const fieldMap: Record<string, keyof typeof ENV.INVENTORY[keyof typeof ENV.INVENTORY]> = {
+    description: "desc",
+    price: "price",
+    imageElem: "img",
+};
 
 export default class ProductsPage extends InventoryPage {
   async toggleItemButton(
@@ -44,78 +61,126 @@ export default class ProductsPage extends InventoryPage {
     }
   }
 
-  async verifyInventoryField<T extends keyof InventoryItem>(
-    field: T,
-    expectedValues: string[],
-    partialMatch = false,
-    getMessage?: (expectedValue: string) => string
-  ): Promise<void> {
-    const items = await this.getAllItems();
+  /** Verify a single product field based on product name */
+   async verifyProductField<T extends keyof InventoryItem>(
+        productName: string,
+        field: T,
+        partialMatch = false
+    ): Promise<void> {
+        const items = await this.getAllItems();
+        const product = items.find(i => i.name === productName);
 
-    const actualValues = await Promise.all(
-      items.map(async (item) => {
-        if (field === "imageElem")
-          return await item.imageElem.getAttribute("src");
-        // @ts-ignore
-        return item[field];
-      })
-    );
+        if (!product) throw new Error(`Product "${productName}" not found on the page`);
 
-    for (const expected of expectedValues) {
-      const found = actualValues.includes(expected);
+        // Map product name to ENV key
+        const inventoryKey = productKeyMap[productName];
+        if (!inventoryKey) throw new Error(`No inventory mapping found for product "${productName}"`);
 
-      expect(
-        found,
-        getMessage
-          ? getMessage(expected)
-          : `Expected ${String(field)} value "${expected}" was not found`
-      ).to.be.true;
+        // Map field to ENV key safely
+        const expectedKey = fieldMap[field as string];
+        if (!expectedKey) throw new Error(`No mapping found for field "${field}"`);
+
+        const expectedValue = ENV.INVENTORY[inventoryKey][expectedKey];
+
+        // Get actual value safely
+        let actualValue: string;
+        if (field === "imageElem") {
+            actualValue = await product.imageElem?.getAttribute("src") ?? '';
+        } else {
+            // @ts-ignore
+            actualValue = product[field] ?? '';
+        }
+
+        const matched = partialMatch
+            ? actualValue.includes(expectedValue)
+            : actualValue === expectedValue;
+
+        expect(
+            matched,
+            `Product "${productName}" ${field} mismatch: expected "${expectedValue}", but found "${actualValue}"`
+        ).to.be.true;
     }
-  }
 
-  async verifyInventoryNames(): Promise<void> {
-    const expectedNames = Object.values(ENV.INVENTORY).map((p) => p.name);
-    await this.verifyInventoryField(
-      "name",
-      expectedNames,
-      false,
-      (field) =>
-        `Inventory name mismatch: expected "${field}" to exist among products`
-    );
-  }
+    /** Convenience methods */
+    async verifyProductDescription(productName: string) {
+        await this.verifyProductField(productName, "description");
+    }
 
-  async verifyInventoryDescriptions(): Promise<void> {
-    const expectedDescriptions = Object.values(ENV.INVENTORY).map(
-      (p) => p.desc
-    );
-    await this.verifyInventoryField(
-      "description",
-      expectedDescriptions,
-      false,
-      (field) =>
-        `Inventory description mismatch: expected "${field}" to exist among products`
-    );
-  }
+    async verifyProductPrice(productName: string) {
+        await this.verifyProductField(productName, "price");
+    }
 
-  async verifyInventoryPrices(): Promise<void> {
-    const expectedPrices = Object.values(ENV.INVENTORY).map((p) => p.price);
-    await this.verifyInventoryField(
-      "price",
-      expectedPrices,
-      false,
-      (field) =>
-        `Inventory price mismatch: expected "${field}" to exist among products`
-    );
-  }
+    async verifyProductImage(productName: string) {
+        await this.verifyProductField(productName, "imageElem", true);
+    }
 
-  async verifyInventoryImages(): Promise<void> {
-    const expectedImages = Object.values(ENV.INVENTORY).map((p) => p.img);
-    await this.verifyInventoryField(
-      "imageElem",
-      expectedImages,
-      true,
-      (field) =>
-        `Inventory image mismatch: expected image containing "${field}" to exist`
-    );
-  }
+    
+     /** Clicks the filter dropdown and waits until options are visible */
+    async verifyFilterDropdownDisplayed(): Promise<void> {
+        const dropdown = ProductsPageSelectors.filterDropdown(); // $ selector
+        await dropdown.waitForDisplayed({ timeout: 5000 });
+        await dropdown.click();
+
+        // Wait for the options to appear
+        const options = await ProductsPageSelectors.filterOptions(); // should return array of $ elements
+        await browser.waitUntil(
+            async () => (await options.length) > 0,
+            { timeout: 5000, timeoutMsg: 'Filter options did not appear' }
+        );
+
+        expect(options.length, 'Filter dropdown options should be visible').to.be.gt(0);
+    }
+
+    /** Verify products are sorted according to selected filter */
+    async verifySorting(sortType: 'az' | 'za' | 'lohi' | 'hilo'): Promise<void> {
+        const dropdown = ProductsPageSelectors.filterDropdown();
+
+        // Apply the sort
+        switch (sortType) {
+            case 'az':
+                await dropdown.selectByAttribute('value', 'az');
+                break;
+            case 'za':
+                await dropdown.selectByAttribute('value', 'za');
+                break;
+            case 'lohi':
+                await dropdown.selectByAttribute('value', 'lohi');
+                break;
+            case 'hilo':
+                await dropdown.selectByAttribute('value', 'hilo');
+                break;
+            default:
+                throw new Error(`Unsupported sort type: ${sortType}`);
+        }
+
+        // Wait briefly for sorting to take effect
+        await browser.pause(500);
+
+        // Get actual products from the page
+        const actualProducts = await this.getAllItems(); // [{name, price, ...}]
+        const actualNames = actualProducts.map(p => p.name);
+
+        // Compute expected order based on initial data
+        let expectedProducts = [...actualProducts];
+
+        switch (sortType) {
+            case 'az':
+                expectedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'za':
+                expectedProducts.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'lohi':
+                expectedProducts.sort((a, b) => parseFloat(a.price.replace('$','')) - parseFloat(b.price.replace('$','')));
+                break;
+            case 'hilo':
+                expectedProducts.sort((a, b) => parseFloat(b.price.replace('$','')) - parseFloat(a.price.replace('$','')));
+                break;
+        }
+
+        const expectedNames = expectedProducts.map(p => p.name);
+
+        expect(actualNames, `Products should be sorted by ${sortType}`).to.deep.equal(expectedNames);
+    }
+
 }

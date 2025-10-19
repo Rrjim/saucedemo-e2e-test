@@ -38,7 +38,7 @@ When(/^the user is landed on the "([^"]+)" page$/, async (envKey: string) => {
 When(
   /^the user adds the following items to the cart:$/,
   async function (this: CustomWorld, dataTable) {
-    const itemsToAdd = parseSingleColumnTable(dataTable, 'itemName');
+    const itemsToAdd = parseSingleColumnTable(dataTable, 'item name');
     await productsPage.addItemsToCart(itemsToAdd, this);
   }
 );
@@ -57,7 +57,16 @@ When(/^the user clicks on the checkout button$/,
 )
 
 When(/^the user fills in the checkout form with:$/, async (dataTable) => {
-  const info = parseSingleRowTable<{ firstName: string; lastName: string; postalCode: string }>(dataTable);
+  // Parse table as Record<string, string>
+  const row = parseSingleRowTable<Record<string, string>>(dataTable);
+
+  // Map feature file headers to object keys expected by page
+  const info = {
+    firstName: row['first name'],
+    lastName: row['last name'],
+    postalCode: row['postal code'],
+  };
+
   await checkoutInfoPage.fillCheckoutInformation(info);
 });
 
@@ -77,6 +86,10 @@ When(/^the user clicks on the cancel button from the checkout overview page$/, a
   await checkoutOverviewPage.clickOnCancel();
 });
 
+When('the user clicks on the {string} button', async (buttonText: string) => {
+    await basePage.clickButtonByText(buttonText);
+});
+
 
 When(
   /^the user removes the following item from the cart:$/,
@@ -85,3 +98,7 @@ When(
     await cartPage.removeItemsFromCart(itemsToRemove, this);
   }
 );
+
+When(/^the filter dropdown should display$/, async () => {
+    await productsPage.verifyFilterDropdownDisplayed();
+});

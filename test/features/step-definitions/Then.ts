@@ -87,11 +87,13 @@ Then(/^the order completion image should be correct$/, async () => {
   await checkoutCompletePage.verifyCompletionImageSource();
 });
 
-Then(/^there should be (\d+) buttons with text "([^"]+)"$/, 
-    async (expectedCountStr: string, expectedText: string) => {
-        await inventoryPage.verifyButtonsCountWithText(expectedText, expectedCountStr);
-    }
+Then(
+  /^there should be (\d+) button(s)? with text "([^"]+)"$/,
+  async (expectedCountStr: string, _s: string, expectedText: string) => {
+      await inventoryPage.verifyButtonsCountWithText(expectedText, expectedCountStr);
+  }
 );
+
 
 Then(/^the user logs out$/, async () => {
     await commonPage.logout();
@@ -102,31 +104,19 @@ Then(/^the login error message should be correct for "([^"]+)"$/,
     await loginPage.expectLoginErrorMessageForUser(username);
 });
 
-
-// Verify all product names
-Then(/^all products should display correct names$/, async () => {
-    await productsPage.verifyInventoryNames();
+Then(/^the product "([^"]*)" should display correct description$/, async (productName: string) => {
+    await productsPage.verifyProductDescription(productName);
 });
 
-// Verify all product descriptions
-Then(/^all products should display correct descriptions$/, async () => {
-    await productsPage.verifyInventoryDescriptions();
+Then(/^the product "([^"]*)" should display correct price$/, async (productName: string) => {
+    await productsPage.verifyProductPrice(productName);
 });
 
-// Verify all product prices
-Then(/^all products should display correct prices$/, async () => {
-    await productsPage.verifyInventoryPrices();
+Then(/^the product "([^"]*)" should display correct image$/, async (productName: string) => {
+    await productsPage.verifyProductImage(productName);
 });
 
-// Verify all product images
-Then(/^all products should display correct images$/, async () => {
-    await productsPage.verifyInventoryImages();
-});
-
-// Optionally: verify all fields at once
-Then(/^all products should display correct name, description, price, and image$/, async () => {
-    await productsPage.verifyInventoryNames();
-    await productsPage.verifyInventoryDescriptions();
-    await productsPage.verifyInventoryPrices();
-    await productsPage.verifyInventoryImages();
+Then(/^products should be sorted by "([^"]+)"$/, async (sortType: string) => {
+    const sortKey = sortType.toLowerCase() as 'az' | 'za' | 'lohi' | 'hilo';
+    await productsPage.verifySorting(sortKey);
 });
