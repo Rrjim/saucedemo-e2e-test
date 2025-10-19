@@ -102,3 +102,7 @@ When(
 When(/^the filter dropdown should display$/, async () => {
     await productsPage.verifyFilterDropdownDisplayed();
 });
+
+When(/^the user resets the application state$/, async () => {
+  await commonPage.resetAppState();
+});

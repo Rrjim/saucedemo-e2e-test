@@ -1,4 +1,4 @@
-@SANITY @PRODUCT @SORT
+@SNT @PRODUCT @SORT
 Feature: Product Sorting Sanity
 
     Background:

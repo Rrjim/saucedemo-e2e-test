@@ -104,17 +104,25 @@ Then(/^the login error message should be correct for "([^"]+)"$/,
     await loginPage.expectLoginErrorMessageForUser(username);
 });
 
-Then(/^the product "([^"]*)" should display correct description$/, async (productName: string) => {
-    await productsPage.verifyProductDescription(productName);
-});
+Then(
+  /^the product "([^"]*)" should display correct (description|price|image) with value "([^"]*)"$/,
+  async (productName: string, field: string, expected: string) => {
+    switch (field) {
+      case "description":
+        await productsPage.verifyProductField(productName, "description", false, expected);
+        break;
+      case "price":
+        await productsPage.verifyProductField(productName, "price", false, expected);
+        break;
+      case "image":
+        await productsPage.verifyProductField(productName, "imageElem", true, expected);
+        break;
+      default:
+        throw new Error(`Unsupported field "${field}"`);
+    }
+  }
+);
 
-Then(/^the product "([^"]*)" should display correct price$/, async (productName: string) => {
-    await productsPage.verifyProductPrice(productName);
-});
-
-Then(/^the product "([^"]*)" should display correct image$/, async (productName: string) => {
-    await productsPage.verifyProductImage(productName);
-});
 
 Then(/^products should be sorted by "([^"]+)"$/, async (sortType: string) => {
     const sortKey = sortType.toLowerCase() as 'az' | 'za' | 'lohi' | 'hilo';

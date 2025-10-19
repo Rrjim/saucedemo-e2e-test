@@ -63,56 +63,43 @@ export default class ProductsPage extends InventoryPage {
 
   /** Verify a single product field based on product name */
    async verifyProductField<T extends keyof InventoryItem>(
-        productName: string,
-        field: T,
-        partialMatch = false
-    ): Promise<void> {
-        const items = await this.getAllItems();
-        const product = items.find(i => i.name === productName);
+  productName: string,
+  field: T,
+  partialMatch = false,
+  expectedOverride?: string
+): Promise<void> {
+  const items = await this.getAllItems();
+  const product = items.find(i => i.name === productName);
 
-        if (!product) throw new Error(`Product "${productName}" not found on the page`);
+  if (!product) throw new Error(`Product "${productName}" not found`);
 
-        // Map product name to ENV key
-        const inventoryKey = productKeyMap[productName];
-        if (!inventoryKey) throw new Error(`No inventory mapping found for product "${productName}"`);
+  let expectedValue: string;
+  if (expectedOverride !== undefined) {
+    expectedValue = expectedOverride;
+  } else {
+    const inventoryKey = productKeyMap[productName];
+    const expectedKey = fieldMap[field as string];
+    expectedValue = ENV.INVENTORY[inventoryKey][expectedKey];
+  }
 
-        // Map field to ENV key safely
-        const expectedKey = fieldMap[field as string];
-        if (!expectedKey) throw new Error(`No mapping found for field "${field}"`);
+  let actualValue: string;
+  if (field === "imageElem") {
+    actualValue = await product.imageElem?.getAttribute("src") ?? '';
+  } else {
+    // @ts-ignore
+    actualValue = product[field] ?? '';
+  }
 
-        const expectedValue = ENV.INVENTORY[inventoryKey][expectedKey];
+  const matched = partialMatch
+    ? actualValue.includes(expectedValue)
+    : actualValue === expectedValue;
 
-        // Get actual value safely
-        let actualValue: string;
-        if (field === "imageElem") {
-            actualValue = await product.imageElem?.getAttribute("src") ?? '';
-        } else {
-            // @ts-ignore
-            actualValue = product[field] ?? '';
-        }
+  expect(
+    matched,
+    `Product "${productName}" ${field} mismatch: expected "${expectedValue}", but found "${actualValue}"`
+  ).to.be.true;
+}
 
-        const matched = partialMatch
-            ? actualValue.includes(expectedValue)
-            : actualValue === expectedValue;
-
-        expect(
-            matched,
-            `Product "${productName}" ${field} mismatch: expected "${expectedValue}", but found "${actualValue}"`
-        ).to.be.true;
-    }
-
-    /** Convenience methods */
-    async verifyProductDescription(productName: string) {
-        await this.verifyProductField(productName, "description");
-    }
-
-    async verifyProductPrice(productName: string) {
-        await this.verifyProductField(productName, "price");
-    }
-
-    async verifyProductImage(productName: string) {
-        await this.verifyProductField(productName, "imageElem", true);
-    }
 
     
      /** Clicks the filter dropdown and waits until options are visible */
