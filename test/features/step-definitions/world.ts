@@ -18,11 +18,14 @@ interface CartItem {
 }
 
 export default class CustomWorld {
+  testId: string;
   pageFactory: PageFactory;
   cartItems: CartItem[] = [];
+  currentTestID?: string; 
 
   constructor() {
     this.pageFactory = new PageFactory();
+    this.testId = "";
   }
 
   /** Lazy getters for page objects */

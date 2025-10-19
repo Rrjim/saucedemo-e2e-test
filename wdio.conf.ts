@@ -231,7 +231,15 @@ export const config: WebdriverIO.Config = {
      *
      * Runs before a Cucumber Scenario.
      * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
-     * @param {object}                 context  Cucumber World object
+    */ 
+//    beforeScenario: function(world) {
+//         console.log(`>> World: ${JSON.stringify(world)}`);
+//         let arr = world.pickle.name.split(/:/);
+//         // @ts-ignore
+//         if(arr.length > 0) browser.config.testId = arr[0]
+//     }
+    
+    /** @param {object}                 context  Cucumber World object
      */
     // beforeScenario: function (world, context) {
     // },

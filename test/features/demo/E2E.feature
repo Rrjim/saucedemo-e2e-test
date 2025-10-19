@@ -4,7 +4,7 @@ Feature: Inventory
         Given the user is landed on the "LOGIN" page
 
     @UI @E2E
-    Scenario: Complete an order with two items
+    Scenario Outline: <TestID>: Complete an order with two items
         When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
         When the user is landed on the "PRODUCTS" page
         And the user verifies page subheader should be equal to "Products"
@@ -54,12 +54,12 @@ Feature: Inventory
         And the user is landed on the "LOGIN" page
 
         Examples:
-            | username                |
-            | STANDARD_USER           |
-            | PERFORMANCE_GLITCH_USER |
+            | TestID     | username                |
+            | TC_E2E_001 | STANDARD_USER           |
+            | TC_E2E_002 | PERFORMANCE_GLITCH_USER |
 
     @UI @E2E
-    Scenario: Cancel an order
+    Scenario Outline: <TestID>: Cancel an order
         When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
         When the user is landed on the "PRODUCTS" page
         And the user verifies page subheader should be equal to "Products"
@@ -102,12 +102,12 @@ Feature: Inventory
         And the user is landed on the "LOGIN" page
 
         Examples:
-            | username                |
-            | STANDARD_USER           |
-            | PERFORMANCE_GLITCH_USER |
+            | TestID     | username                |
+            | TC_E2E_003 | STANDARD_USER           |
+            | TC_E2E_004 | PERFORMANCE_GLITCH_USER |
 
     @UI @E2E
-    Scenario: The total amount is updated when removing an item from the order
+    Scenario Outline: <TestID>: The total amount is updated when removing an item from the order
         When the user logs in with username "<username>" and password "STANDARD_PASSWORD"
         When the user is landed on the "PRODUCTS" page
         And the user verifies page subheader should be equal to "Products"
@@ -161,8 +161,7 @@ Feature: Inventory
         And the user logs out
         And the user is landed on the "LOGIN" page
 
-
         Examples:
-            | username                |
-            | STANDARD_USER           |
-            | PERFORMANCE_GLITCH_USER |
+            | TestID     | username                |
+            | TC_E2E_005 | STANDARD_USER           |
+            | TC_E2E_006 | PERFORMANCE_GLITCH_USER |
