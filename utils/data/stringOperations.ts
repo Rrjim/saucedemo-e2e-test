@@ -1,12 +1,13 @@
 export default function randomString(maxLength: number = 10): string {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const length = Math.floor(Math.random() * maxLength) + 1; // length 1..maxLength
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        const idx = Math.floor(Math.random() * chars.length);
-        result += chars[idx];
-    }
-    return result;
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const length = Math.floor(Math.random() * maxLength) + 1; // length 1..maxLength
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const idx = Math.floor(Math.random() * chars.length);
+    result += chars[idx];
+  }
+  return result;
 }
 
 // const OTHER_USER = process.env.VISUAL_USER || randomString();
@@ -19,7 +20,7 @@ export default function randomString(maxLength: number = 10): string {
 export function extractNumericPart(text: string): number {
   if (!text) return 0;
 
-  const cleanText = text.replace(/[^0-9.]/g, ''); // remove everything except digits and dot
+  const cleanText = text.replace(/[^0-9.]/g, ""); // remove everything except digits and dot
   const numericValue = parseFloat(cleanText);
 
   if (isNaN(numericValue)) {
@@ -35,4 +36,3 @@ export function extractNumericPart(text: string): number {
 export function mapTextToNumber(textArr: string[]): number[] {
   return textArr.map(extractNumericPart);
 }
-

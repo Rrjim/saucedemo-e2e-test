@@ -1,4 +1,4 @@
-import { DataTable } from '@cucumber/cucumber';
+import { DataTable } from "@cucumber/cucumber";
 
 /**
  * Parse a 2-column table into an object
@@ -11,7 +11,9 @@ import { DataTable } from '@cucumber/cucumber';
  * { firstName: 'John', lastName: 'Doe', postalCode: '12345' }
  */
 
-export function parseTwoColumnTable(dataTable: DataTable): Record<string, string> {
+export function parseTwoColumnTable(
+  dataTable: DataTable
+): Record<string, string> {
   return dataTable.rowsHash();
 }
 
@@ -29,28 +31,34 @@ export function parseTwoColumnTable(dataTable: DataTable): Record<string, string
  * ]
  */
 
-
 /**
  * Parse a single-row Cucumber data table into a typed object.
  */
-export default function parseSingleRowTable<T = Record<string, string>>(dataTable: DataTable): T {
+export default function parseSingleRowTable<T = Record<string, string>>(
+  dataTable: DataTable
+): T {
   const rows = dataTable.hashes();
   if (rows.length !== 1) {
-    throw new Error(`Expected exactly 1 row in data table, but got ${rows.length}`);
+    throw new Error(
+      `Expected exactly 1 row in data table, but got ${rows.length}`
+    );
   }
   return rows[0] as T;
 }
 
-export function parseSingleColumnTable(dataTable: DataTable, columnKey: string): string[] {
+export function parseSingleColumnTable(
+  dataTable: DataTable,
+  columnKey: string
+): string[] {
   const rows = dataTable.hashes();
-  return rows.map(row => row[columnKey]);
+  return rows.map((row) => row[columnKey]);
 }
-
-
 
 /**
  * ✅ Parse multi-row table
  */
-export function parseMultiRowTable<T = Record<string, string>>(dataTable: DataTable): T[] {
+export function parseMultiRowTable<T = Record<string, string>>(
+  dataTable: DataTable
+): T[] {
   return dataTable.hashes() as T[];
 }

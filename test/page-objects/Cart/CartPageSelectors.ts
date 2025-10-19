@@ -1,5 +1,4 @@
 export const CartPageSelectors = {
-    continueShoppingButton: () => $('[data-test=continue-shopping]'),
-    checkoutButton: () => $('[data-test=checkout]'),
-
+  continueShoppingButton: () => $("[data-test=continue-shopping]"),
+  checkoutButton: () => $("[data-test=checkout]"),
 };
