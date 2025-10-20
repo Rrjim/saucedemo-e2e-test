@@ -1,9 +1,6 @@
 import { InventoryPageSelectors } from "./InventoryPageSelectors";
-import Input from "../../../utils/elements/Input";
-import Element from "../../../utils/elements/Element";
 import BasePage from "../Base/BasePage";
 import { expect } from "chai";
-import CustomWorld from "../../features/step-definitions/world";
 import { InventoryItem } from "./InventoryItem";
 import { mapTextToNumber } from "../../../utils/data/stringOperations";
 

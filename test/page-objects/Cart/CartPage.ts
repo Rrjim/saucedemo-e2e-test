@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import CustomWorld from "../../features/step-definitions/world";
 import InventoryPage from "../Inventory/InventoryPage";
-import { InventoryPageSelectors } from "../Inventory/InventoryPageSelectors";
 import { InventoryItem } from "../Inventory/InventoryItem";
 import { CartPageSelectors } from "./CartPageSelectors";
 import { extractNumericPart } from "../../../utils/data/stringOperations";

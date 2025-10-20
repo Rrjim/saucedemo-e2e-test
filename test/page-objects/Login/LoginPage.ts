@@ -25,6 +25,7 @@ export default class LoginPage extends BasePage {
     return await errorElem.getText();
   }
 
+  // # messages to be handled using data table
   async expectLoginErrorMessageForUser(username: string): Promise<void> {
     const errorMessages: Record<string, string> = {
       LOCKED_OUT_USER: "Epic sadface: Sorry, this user has been locked out.",

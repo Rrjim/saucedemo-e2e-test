@@ -128,12 +128,12 @@ export default class ProductsPage extends InventoryPage {
 
   /** Clicks the filter dropdown and waits until options are visible */
   async verifyFilterDropdownDisplayed(): Promise<void> {
-    const dropdown = ProductsPageSelectors.filterDropdown(); // $ selector
+    const dropdown = ProductsPageSelectors.filterDropdown(); 
     await dropdown.waitForDisplayed({ timeout: 5000 });
     await dropdown.click();
 
     // Wait for the options to appear
-    const options = await ProductsPageSelectors.filterOptions(); // should return array of $ elements
+    const options = await ProductsPageSelectors.filterOptions(); 
     await browser.waitUntil(async () => (await options.length) > 0, {
       timeout: 5000,
       timeoutMsg: "Filter options did not appear",
@@ -167,14 +167,14 @@ export default class ProductsPage extends InventoryPage {
         throw new Error(`Unsupported sort type: ${sortType}`);
     }
 
-    // Wait briefly for sorting to take effect
+    // should i keep you?
     await browser.pause(500);
 
-    // Get actual products from the page
+    // get actual products from the page
     const actualProducts = await this.getAllItems(); // [{name, price, ...}]
     const actualNames = actualProducts.map((p) => p.name);
 
-    // Compute expected order based on initial data
+    // compute expected order based on initial data
     let expectedProducts = [...actualProducts];
 
     switch (sortType) {

@@ -1,5 +1,5 @@
 @UI @E2E
-Feature: Inventory
+Feature: Order products
 
     Background:
         Given the user is landed on the "LOGIN" page
