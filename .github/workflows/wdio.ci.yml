@@ -1,54 +1,77 @@
-name: Run WDIO UI Tests
-
+name: WDIO-CI
 on:
   push:
-    branches:
-      - master
+    branches: [ master, release]
   pull_request:
-    branches:
-      - master
-
+    branches: [ master, release]
+  workflow_dispatch:
 jobs:
-  wdio-ui-tests:
+  build:
     runs-on: ubuntu-latest
+    env:
+      
+      # Standard Users
+      STANDARD_USER: ${{secrets.STANDARD_USER}}
+      LOCKED_OUT_USER: ${{secrets.LOCKED_OUT_USER}}
+      PROBLEM_USER: ${{secrets.PROBLEM_USER}}
+      PERFORMANCE_GLITCH_USER: ${{secrets.PERFORMANCE_GLITCH_USER}}
+      ERROR_USER: ${{secrets.ERROR_USER}}
+      VISUAL_USER: ${{secrets.VISUAL_USER}}
+      STANDARD_PASSWORD: ${{secrets.STANDARD_PASSWORD}}
+
+      # URLs
+      PRODUCTS: ${{secrets.PRODUCTS}}
+      LOGIN: ${{secrets.LOGIN}}
+      CART: ${{secrets.CART}}
+      INFORMATION: ${{secrets.INFORMATION}}
+      OVERVIEW: ${{secrets.OVERVIEW}}
+      COMPLETION: ${{secrets.COMPLETION}}
+
+      # Test data
+      EXPECTED_ITEM_COUNT: ${{secrets.EXPECTED_ITEM_COUNT}}
+      ORDER_COMPLETE_IMG_SRC: ${{secrets.ORDER_COMPLETE_IMG_SRC}}
+
+      # Inventory Image Sources
+      IMG_BACKPACK: ${{secrets.IMG_BACKPACK}}
+      IMG_BIKE_LIGHT: ${{secrets.IMG_BIKE_LIGHT}}
+      IMG_JACKET: ${{secrets.IMG_JACKET}}
+      IMG_BOLT_SHIRT: ${{secrets.IMG_BOLT_SHIRT}}
+      IMG_ONESIE: ${{secrets.IMG_ONESIE}}
+      IMG_RED_TATT: ${{secrets.IMG_RED_TATT}}
+
+      # Inventory Names
+      NAME_BACKPACK: ${{secrets.NAME_BACKPACK}}
+      NAME_BIKE_LIGHT: ${{secrets.NAME_BIKE_LIGHT}}
+      NAME_JACKET: ${{secrets.NAME_JACKET}}
+      NAME_BOLT_SHIRT: ${{secrets.NAME_BOLT_SHIRT}}
+      NAME_ONESIE: ${{secrets.NAME_ONESIE}}
+      NAME_RED_TATT: ${{secrets.NAME_RED_TATT}}
+
+      # Inventory Descriptions
+      DESC_BACKPACK: ${{secrets.DESC_BACKPACK}}
+      DESC_BIKE_LIGHT: ${{secrets.DESC_BIKE_LIGHT}}
+      DESC_JACKET: ${{secrets.DESC_JACKET}}
+      DESC_BOLT_SHIRT: ${{secrets.DESC_BOLT_SHIRT}}
+      DESC_ONESIE: ${{secrets.DESC_ONESIE}}
+      DESC_RED_TATT: ${{secrets.DESC_RED_TATT}}
+
+      # Inventory Prices
+      PRICE_BACKPACK: ${{secrets.PRICE_BACKPACK}}
+      PRICE_BIKE_LIGHT: ${{secrets.PRICE_BIKE_LIGHT}}
+      PRICE_JACKET: ${{secrets.PRICE_JACKET}}
+      PRICE_BOLT_SHIRT: ${{secrets.PRICE_BOLT_SHIRT}}
+      PRICE_ONESIE: ${{secrets.PRICE_ONESIE}}
+      PRICE_RED_TATT: ${{secrets.PRICE_RED_TATT}}
 
     steps:
-      # 1. Checkout the repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2. Setup Node.js
-      - name: Setup Node.js
+      - name: Install Chromium
+        run: sudo apt-get install chromium-browser
+      - uses: actions/checkout@v3
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
-          cache: "npm"
-
-      # 3. Install dependencies
+          node-version: 20.x
       - name: Install dependencies
-        run: npm ci
-
-      # 4. Run WDIO tests filtered by @UI
-      - name: Run WDIO UI Tests
+        run: npm install
+      - name: Running smoke tests
         run: npx wdio run wdio.conf.ts --cucumberOpts.tagExpression "@UI"
-
-      # 5. Upload Allure results
-      - name: Upload Allure Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-results
-          path: allure-results
-
-      # 6. Generate and upload Allure HTML report
-      - name: Generate Allure Report
-        if: always()
-        run: npx allure generate ./allure-results --clean -o ./allure-report
-
-      - name: Upload Allure HTML report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-report
-          path: ./allure-report
-
