@@ -156,3 +156,7 @@ Then(
     await this.productsPage.verifySorting(sortKey);
   }
 );
+
+Then(/^the checkout sent information was not empty$/, async function (this: CustomWorld) {
+  await this.checkoutInfoPage.verifyCheckoutInfoNotEmpty(this);
+});

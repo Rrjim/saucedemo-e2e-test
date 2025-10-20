@@ -49,8 +49,9 @@ When(
       lastName: row["last name"],
       postalCode: row["postal code"],
     };
-    await this.checkoutInfoPage.fillCheckoutInformation(info);
-    logger.info(`the user just added their information ${info.firstName} ${info.lastName} ${info.postalCode}`)
+    await this.checkoutInfoPage.fillCheckoutInformation(info, this); 
+    logger.info(`the user just added their information ${info.firstName} ${info.lastName} ${info.postalCode}`);
+    // console.log(">>FNAME " +this.checkInfo.firstName)
   }
 );
 
@@ -111,3 +112,10 @@ When(
     logger.info(`>> App state was reset!`)
   }
 );
+
+When(
+    /^the checkout information for should be sent succesffully$/,
+    async function(this:CustomWorld) {
+        await this.checkoutInfoPage.verifyFormSentSuccessfully();
+    }
+)

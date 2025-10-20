@@ -17,11 +17,18 @@ interface CartItem {
   imageSrc?: string;
 }
 
+interface CheckoutInfo {
+  firstName: string;
+  lastName: string;
+  postalCode: string;
+}
+
 export default class CustomWorld {
   testId: string;
   pageFactory: PageFactory;
   cartItems: CartItem[] = [];
-  currentTestID?: string; 
+  currentTestID?: string;
+  checkInfo?: CheckoutInfo;
 
   constructor() {
     this.pageFactory = new PageFactory();

@@ -4,4 +4,5 @@ export const CheckoutInformationPageSelectors = {
   postalCode: () => $("[data-test=postalCode]"),
   cancelBtn: () => $("[data-test=cancel]"),
   continueBtn: () => $("[data-test=continue]"),
+  errorMsg: () => $('h3[data-test="error"]'),
 };
