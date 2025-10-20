@@ -2,13 +2,13 @@ import { setWorldConstructor } from "@wdio/cucumber-framework";
 import PageFactory from "../../../utils/factories/PageObjectFactory";
 import InventoryPage from "../../page-objects/Inventory/InventoryPage";
 import LoginPage from "../../page-objects/Login/LoginPage";
-import ProductsPage from "../../page-objects/Products/ProductsPageObject";
-import CartPage from "../../page-objects/Cart/CartPageObject";
+import ProductsPage from "../../page-objects/Products/ProductsPage";
+import CartPage from "../../page-objects/Cart/CartPage";
 import BasePage from "../../page-objects/Base/BasePage";
-import CheckoutCompletePage from "../../page-objects/CheckoutComplete/CheckoutCompletePageObject";
-import CheckoutOverviewPage from "../../page-objects/CheckoutOverview/CheckoutOverviewPageObject";
+import CheckoutCompletePage from "../../page-objects/CheckoutComplete/CheckoutCompletePage";
+import CheckoutOverviewPage from "../../page-objects/CheckoutOverview/CheckoutOverviewPage";
 import CommonPage from "../../page-objects/Common/CommonPageObject";
-import CheckoutInformationPage from "../../page-objects/CheckoutInformation/CheckoutInformationPageObject";
+import CheckoutInformationPage from "../../page-objects/CheckoutInformation/CheckoutInformationPage";
 
 interface CartItem {
   name: string;

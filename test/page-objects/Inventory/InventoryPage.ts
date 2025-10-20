@@ -1,4 +1,4 @@
-import { InventoryPageSelectors } from "./InventoryPageSelectorstors";
+import { InventoryPageSelectors } from "./InventoryPageSelectors";
 import Input from "../../../utils/elements/Input";
 import Element from "../../../utils/elements/Element";
 import BasePage from "../Base/BasePage";

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { CheckoutOverviewPageSelectors } from "./CheckoutOverviewPageSelectors";
-import CartPage from "../Cart/CartPageObject";
+import CartPage from "../Cart/CartPage";
 import { extractNumericPart } from "../../../utils/data/stringOperations";
 import CustomWorld from "../../features/step-definitions/world";
 
