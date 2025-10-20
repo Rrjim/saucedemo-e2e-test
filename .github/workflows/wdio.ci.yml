@@ -8,8 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
-      
       # Standard Users
       STANDARD_USER: ${{secrets.STANDARD_USER}}
       LOCKED_OUT_USER: ${{secrets.LOCKED_OUT_USER}}
@@ -64,14 +64,34 @@ jobs:
       PRICE_RED_TATT: ${{secrets.PRICE_RED_TATT}}
 
     steps:
-      - name: Install Chromium
-        run: sudo apt-get install chromium-browser
       - uses: actions/checkout@v3
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20.x
+          cache: 'npm'
+
+      # Faster and compatible Chrome + Driver install
+      - name: Install Chrome and ChromeDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          npx chromedriver --version
+
+      # Cache dependencies 
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
-        run: npm install
-      - name: Running smoke tests
+        run: npm ci
+
+      - name: Run all UI tests
         run: npx wdio run wdio.conf.ts --cucumberOpts.tagExpression "@UI"
