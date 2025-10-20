@@ -55,9 +55,9 @@ Feature: Inventory
         And the user is landed on the "LOGIN" page
 
         Examples:
-            | TestID     | username                |
-            | TC_E2E_001 | STANDARD_USER           |
-            | TC_E2E_002 | PERFORMANCE_GLITCH_USER |
+            | TestID    | username                |
+            | SAUCE_175 | STANDARD_USER           |
+            | SAUCE_176 | PERFORMANCE_GLITCH_USER |
 
     Scenario Outline: <TestID>: Cancel an order
         And the user logs in with username "<username>" and password "STANDARD_PASSWORD"
@@ -103,9 +103,9 @@ Feature: Inventory
         And the user is landed on the "LOGIN" page
 
         Examples:
-            | TestID     | username                |
-            | TC_E2E_003 | STANDARD_USER           |
-            | TC_E2E_004 | PERFORMANCE_GLITCH_USER |
+            | TestID    | username                |
+            | SAUCE_177 | STANDARD_USER           |
+            | SAUCE_178 | PERFORMANCE_GLITCH_USER |
 
     Scenario Outline: <TestID>: The total amount is updated when removing an item from the order
         And the user logs in with username "<username>" and password "STANDARD_PASSWORD"
@@ -163,14 +163,9 @@ Feature: Inventory
         And the user is landed on the "LOGIN" page
 
         Examples:
-            | TestID     | username                |
-            | TC_E2E_005 | STANDARD_USER           |
-            | TC_E2E_006 | PERFORMANCE_GLITCH_USER |
-
-# PENDING CORE
-# 1. User Info Last name problems (onKeyPress adds text to first name instead)
-# 2. User Info Last name problems (onKeyPress they input remains empty)
-# => After clicking on Continue to last step for checking out, an error div comes up!
+            | TestID    | username                |
+            | SAUCE_179 | STANDARD_USER           |
+            | SAUCE_180 | PERFORMANCE_GLITCH_USER |
 
 
 # PENDING Good to have

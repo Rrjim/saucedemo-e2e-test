@@ -1,5 +1,5 @@
 @UI @SNT @CHECKOUT
-Feature: Remove product from cart
+Feature: Fill in and submit user information form
 
   Background:
     Given the user is landed on the "LOGIN" page
@@ -25,14 +25,14 @@ Feature: Remove product from cart
       | standard   | user      | 12345       |
     And the user clicks on the continue button
     And the checkout information for should be sent succesffully
-    And the checkout information is not empty
+    And the checkout sent information was not empty
     And the user resets the application state
 
     Examples:
-      | TestID     | username                | product           |
-      | TC_SNT_001 | STANDARD_USER           | Sauce Labs Onesie |
-      | TC_SNT_012 | PROBLEM_USER            | Sauce Labs Onesie |
-      | TC_SNT_017 | ERROR_USER              | Sauce Labs Onesie |
-      | TC_SNT_023 | VISUAL_USER             | Sauce Labs Onesie |
-      | TC_SNT_029 | PERFORMANCE_GLITCH_USER | Sauce Labs Onesie |
+      | TestID    | username                | product           |
+      | SAUCE_170 | STANDARD_USER           | Sauce Labs Onesie |
+      | SAUCE_171 | PROBLEM_USER            | Sauce Labs Onesie |
+      | SAUCE_172 | ERROR_USER              | Sauce Labs Onesie |
+      | SAUCE_173 | VISUAL_USER             | Sauce Labs Onesie |
+      | SAUCE_174 | PERFORMANCE_GLITCH_USER | Sauce Labs Onesie |
 
