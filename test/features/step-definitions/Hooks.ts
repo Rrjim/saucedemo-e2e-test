@@ -1,7 +1,6 @@
 import { Before } from "@wdio/cucumber-framework";
 import PageFactory from "../../../utils/factories/PageObjectFactory";
 import LoginPage from "../../page-objects/Login/LoginPage";
-import allure from "@wdio/allure-reporter";
 import logger from "../../helper/logger";
 
 const pageFactory = new PageFactory();
