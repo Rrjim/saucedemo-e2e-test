@@ -2,6 +2,7 @@ import { Then } from "@wdio/cucumber-framework";
 import CustomWorld from "./world";
 import { parseTwoColumnTable } from "../../../utils/data/dataTableOperations";
 import logger from "../../helper/logger";
+import { ENV } from "../../../config/env";
 
 Then(
   /^the number of products displayed on the page is: (\d+)$/,
@@ -116,15 +117,29 @@ Then(
     this: CustomWorld,
     productName: string,
     field: string,
-    expected: string
+    expectedKey: string
   ) {
+    let expectedValue: string;
+
+    // If expectedKey looks like an ENV path, resolve it
+    if (expectedKey.includes(".")) {
+      const [envKey, fieldKey] = expectedKey.split(".");
+      const inventoryItem = ENV.INVENTORY[envKey as keyof typeof ENV.INVENTORY];
+      if (!inventoryItem) {
+        throw new Error(`ENV.INVENTORY key "${envKey}" not found`);
+      }
+      expectedValue = inventoryItem[fieldKey as keyof typeof inventoryItem] as string;
+    } else {
+      expectedValue = expectedKey; // fallback literal
+    }
+
     switch (field) {
       case "description":
         await this.productsPage.verifyProductField(
           productName,
           "description",
           false,
-          expected
+          expectedValue
         );
         break;
       case "price":
@@ -132,7 +147,7 @@ Then(
           productName,
           "price",
           false,
-          expected
+          expectedValue
         );
         break;
       case "image":
@@ -140,7 +155,7 @@ Then(
           productName,
           "imageElem",
           true,
-          expected
+          expectedValue
         );
         break;
       default:
@@ -148,6 +163,7 @@ Then(
     }
   }
 );
+
 
 Then(
   /^products should be sorted by "([^"]+)"$/,
